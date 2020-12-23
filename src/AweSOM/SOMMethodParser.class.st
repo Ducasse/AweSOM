@@ -109,7 +109,7 @@ SOMMethodParser >> binarySelector [
 
 { #category : #patterns }
 SOMMethodParser >> blockArgPattern [
-	| blockSig |
+	
 	sym == #colon ifTrue: [self blockPattern ].
 ]
 
@@ -180,7 +180,7 @@ SOMMethodParser >> expectOneOf: syms [
 	(self acceptOneOf: syms)
 		ifTrue: [	^ true. ].
 	
-	msg := RWBinaryOrTextStream on: String new.
+	msg := self streamClass on: String new.
 	msg nextPutAll: 'unexpected symbol in line '.
 	msg nextPutAll: lexer currentLineNumber asString.
 	msg nextPutAll: '. Expected one of '.
@@ -205,8 +205,8 @@ SOMMethodParser >> expectOneOf: syms [
 SOMMethodParser >> expression [
 	self peek.
 	nextSym == #assign
-		ifTrue:  [self assignation.]
-		ifFalse: [self evaluation. ]
+		ifTrue:  [ self assignation ]
+		ifFalse: [ self evaluation ]
 ]
 
 { #category : #helper }
@@ -282,7 +282,7 @@ SOMMethodParser >> keyword [
 { #category : #patterns }
 SOMMethodParser >> keywordMessage: superSend [
 	| kw sel |
-	kw := RWBinaryOrTextStream on: String new.
+	kw := self streamClass on: String new.
 	
 	[ kw nextPutAll: self keyword.
 	  self formula.
@@ -298,7 +298,7 @@ SOMMethodParser >> keywordMessage: superSend [
 { #category : #'selector patterns' }
 SOMMethodParser >> keywordPattern [
 	| kw |
-	kw := RWBinaryOrTextStream on: String new.
+	kw := self streamClass on: String new.
 	[ kw nextPutAll: self keyword.
 	  mgenc addArgumentIfAbsent: self argument
 	] doWhileTrue: [sym == #keyword].
@@ -482,8 +482,8 @@ SOMMethodParser >> methodBlock [
 SOMMethodParser >> methodBody [
 	sym == #primitive
 		ifTrue:  [ mgenc isPrimitive: true.
-					 self primitiveBlock.]
-		ifFalse: [ self methodBlock ].
+					 self primitiveBlock ]
+		ifFalse: [ self methodBlock ]
 
 ]
 

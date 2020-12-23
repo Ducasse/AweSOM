@@ -18,7 +18,7 @@ CompileSOMClassTest >> compileSource: source [
 	^ universe loadAndStoreFromSource: source
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #compiling }
 CompileSOMClassTest >> createCgencFromSource: source [
 	
 	| parser |

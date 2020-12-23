@@ -46,7 +46,7 @@ SOMLexer >> currentLineNumber [
 
 { #category : #private }
 SOMLexer >> endOfBuffer [
-	^ bufP > (buf size)
+	^ bufP > buf size
 ]
 
 { #category : #accessing }
@@ -73,7 +73,7 @@ SOMLexer >> hasMoreInput [
 SOMLexer >> initialize [
 	lineNumber := 0.
 	peekDone := false.
-	text := RWBinaryOrTextStream on: String new.
+	text := self streamClass on: String new.
 	buf := ''.
 	bufP := 1.
 ]
@@ -100,7 +100,7 @@ SOMLexer >> isOperator: char [
 SOMLexer >> match: aSymbol [
 	sym := aSymbol.
 	symChr := self currentChar.
-	text := RWBinaryOrTextStream with: symChr asString.
+	text := self streamClass with: symChr asString.
 	self readNext.
 	^ sym.
 ]
@@ -111,7 +111,7 @@ SOMLexer >> matchColonOrAssignment [
 		sym := #assign.
 		bufP := bufP + 2.
 		symChr := nil.
-		text := RWBinaryOrTextStream with: ':='.
+		text := self streamClass with: ':='.
 		^ sym
 	].
 
@@ -123,7 +123,7 @@ SOMLexer >> matchDigit [
 	| sawDecimalMark |
 	sym    := #integer.
 	symChr := nil.
-	text   := RWBinaryOrTextStream on: String new.
+	text   := self streamClass on: String new.
 	
 	sawDecimalMark := false.
 
@@ -171,7 +171,7 @@ SOMLexer >> matchEscapeChar [
 { #category : #lexing }
 SOMLexer >> matchLetter [
 	symChr := nil.
-	text := RWBinaryOrTextStream on: String new.
+	text := self streamClass on: String new.
 	
 	[self currentChar notNil and: [
 		 self currentChar isLetter or: [
@@ -205,7 +205,7 @@ SOMLexer >> matchLetter [
 { #category : #lexing }
 SOMLexer >> matchMinusOrSeparator [
 	(self nextInBufIs: self seperator) ifTrue: [
-		text := RWBinaryOrTextStream on: String new.
+		text := self streamClass on: String new.
 		[self currentChar == $-] whileTrue: [
 			text nextPut: $-.
 			self readNext.
@@ -224,7 +224,7 @@ SOMLexer >> matchOperator [
 	(self isOperator: (self bufchar: bufP + 1)) ifTrue: [
 		sym := #operatorSequence.
 		symChr := nil.
-		text := RWBinaryOrTextStream on: String new.
+		text := self streamClass on: String new.
 		
 		[self isOperator: self currentChar] whileTrue: [
 			text nextPut: self currentChar.
@@ -257,7 +257,7 @@ SOMLexer >> matchPrimitive [
 	bufP := bufP + self primitive size.
 	sym := #primitive.
 	symChr := nil.
-	text := RWBinaryOrTextStream with: self primitive.
+	text := self streamClass with: self primitive.
 	^ sym
 	
 ]
@@ -266,7 +266,7 @@ SOMLexer >> matchPrimitive [
 SOMLexer >> matchString [
 	sym := #STString.
 	symChr := nil.
-	text := RWBinaryOrTextStream on: String new.
+	text := self streamClass on: String new.
 	
 	self readNext. "skip start $' "
 	[ self currentChar == $' ]
@@ -335,7 +335,7 @@ SOMLexer >> peek [
 	
 	oldSym    := sym.
 	oldSymChr := symChr.
-	oldText   := RWBinaryOrTextStream with: text contents.
+	oldText   := self streamClass with: text contents.
 	
 	nextSym   := self symbol.
 	nextSymChr:= symChr.
@@ -420,6 +420,11 @@ SOMLexer >> stream: aReadStream [
 ]
 
 { #category : #lexing }
+SOMLexer >> streamClass [
+	^ ReadWriteStream  
+]
+
+{ #category : #lexing }
 SOMLexer >> symbol [
 	| currentChar |
 	peekDone ifTrue: [^ self symbolAfterPeek].
@@ -427,7 +432,7 @@ SOMLexer >> symbol [
 	self skipWhitespaceAndCommentsOrEnd: [
 		sym := #none.
 		symChr := nil.
-		text := RWBinaryOrTextStream on: String new.
+		text := self streamClass on: String new.
 		^ sym
 	].
 
@@ -453,7 +458,7 @@ SOMLexer >> symbol [
 	"else"
 	sym    := #none.
 	symChr := currentChar.
-	text   := RWBinaryOrTextStream with: currentChar asString.
+	text   := self streamClass with: currentChar asString.
 	
 	^ sym
 ]

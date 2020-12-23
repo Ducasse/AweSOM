@@ -182,6 +182,12 @@ SOMParser >> stream: aReadStream [
 	self getSym.
 ]
 
+{ #category : #'initialize-release' }
+SOMParser >> streamClass [
+
+	^ ReadWriteStream 
+]
+
 { #category : #accessing }
 SOMParser >> sym [
 	^ sym

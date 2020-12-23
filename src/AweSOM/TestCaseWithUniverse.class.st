@@ -7,7 +7,7 @@ Class {
 	#category : #'AweSOM-Test'
 }
 
-{ #category : #'as yet unclassified' }
+{ #category : #running }
 TestCaseWithUniverse >> loadClazzes: classes [ 
 
 	classes do: [:class | universe loadSystemClass: (universe globalAt: class)]

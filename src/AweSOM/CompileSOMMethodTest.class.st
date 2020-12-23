@@ -4,7 +4,7 @@ Class {
 	#category : #'AweSOM-Compiler-Test'
 }
 
-{ #category : #'as yet unclassified' }
+{ #category : #create }
 CompileSOMMethodTest >> createMgencFromSource: source [
 	
 	| parser |

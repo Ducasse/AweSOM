@@ -4,7 +4,7 @@ Class {
 	#category : #'AweSOM-VM-Test'
 }
 
-{ #category : #tests }
+{ #category : #running }
 SOMTest >> exec: aTest [
 	| universe |
 	universe := SOMUniverse new.
@@ -13,7 +13,7 @@ SOMTest >> exec: aTest [
 
 ]
 
-{ #category : #tests }
+{ #category : #running }
 SOMTest >> setUp [
 	SOMUniverse classPaths: nil
 ]
