@@ -30,7 +30,7 @@ CompileSOMClassTest >> createCgencFromSource: source [
 CompileSOMClassTest >> test01SimpleClassCreation [
 
 	| cgenc clazz |
-	cgenc := SOMClassGenerationContext new.
+	cgenc := SOMClassGenerator new.
 	cgenc theName: 'Robert'.
 	cgenc superName: #Object.
 	cgenc addInstanceFields: { 'alter'. 'adresse' }.
@@ -46,7 +46,7 @@ CompileSOMClassTest >> test01SimpleClassCreation [
 { #category : #tests }
 CompileSOMClassTest >> test02CompileClass [
 	| cgenc clazz |
-	cgenc := SOMClassGenerationContext new.
+	cgenc := SOMClassGenerator new.
 	cgenc addClassField: 'alter'.
 	clazz := cgenc assembleIn: universe.
 	self 

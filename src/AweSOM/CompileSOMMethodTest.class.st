@@ -15,7 +15,7 @@ CompileSOMMethodTest >> createMgencFromSource: source [
 { #category : #tests }
 CompileSOMMethodTest >> test01BuildSimpleMethod [
 	| mgenc method |
-	mgenc := SOMMethodGenerationContext named: 'a:b:c:'.
+	mgenc := SOMMethodGenerator named: 'a:b:c:'.
 	method := mgenc assembleIn: universe.
 	self 
 		assert: method somSignature symbol

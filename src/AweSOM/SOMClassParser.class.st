@@ -110,7 +110,7 @@ SOMClassParser >> foreignParseMethod [
 SOMClassParser >> initialize [
 	super initialize.
 	
-	self cgenc: SOMClassGenerationContext new.
+	self cgenc: SOMClassGenerator new.
 ]
 
 { #category : #helper }

@@ -24,7 +24,7 @@ ParseMethodTest >> test01SimpleMethodDef [
 
 	self setUpParser: 'x = (1)'.
 	result := parser apply: #method.
-	self assert: (result isKindOf: SOMMethodGenerationContext).
+	self assert: (result isKindOf: SOMMethodGenerator).
 	self 
 		assert: result signature
 		equals: #x
@@ -128,7 +128,7 @@ ParseMethodTest >> test12SimpleOperatorMethodDef [
 
 	self setUpParser: '& bool = ()'.
 	result := parser apply: #method.
-	self assert: (result isKindOf: SOMMethodGenerationContext).
+	self assert: (result isKindOf: SOMMethodGenerator).
 	self assert: result signature 			equals: '&'.
 	self assert: result arguments size  		equals: 2.
 	self assert: result arguments first 		equals: #self.

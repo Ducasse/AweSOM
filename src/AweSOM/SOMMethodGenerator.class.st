@@ -1,9 +1,12 @@
 "
-I'm a kind of representation of a some method (the Context suffix in my name is just confusing and has nothing to do with the context of a VM).
-I better name would be SOMMethodDescriptor.
+I'm a method generator/compiler.
+I generate methods from the parser information. In particular I generate the bytecode for the method.
+I holder a reference to the class generator. 
+
+
 "
 Class {
-	#name : #SOMMethodGenerationContext,
+	#name : #SOMMethodGenerator,
 	#superclass : #Object,
 	#instVars : [
 		'signature',
@@ -22,7 +25,7 @@ Class {
 }
 
 { #category : #'as yet unclassified' }
-SOMMethodGenerationContext class >> blockIn: mgenc [ 
+SOMMethodGenerator class >> blockIn: mgenc [ 
 	^ self new
 		somHolder: mgenc somHolder;
 		outer: mgenc;
@@ -30,7 +33,7 @@ SOMMethodGenerationContext class >> blockIn: mgenc [
 ]
 
 { #category : #'as yet unclassified' }
-SOMMethodGenerationContext class >> named: n [
+SOMMethodGenerator class >> named: n [
 
 	^ self new
 		signature: n asSymbol;
@@ -38,7 +41,7 @@ SOMMethodGenerationContext class >> named: n [
 ]
 
 { #category : #accessing }
-SOMMethodGenerationContext >> addArgumentIfAbsent: argName [
+SOMMethodGenerator >> addArgumentIfAbsent: argName [
 
 	(self arguments includes: argName) ifTrue: [^ false].
 	self arguments add: argName.
@@ -46,7 +49,7 @@ SOMMethodGenerationContext >> addArgumentIfAbsent: argName [
 ]
 
 { #category : #accessing }
-SOMMethodGenerationContext >> addLiteralIfAbsent: literal [
+SOMMethodGenerator >> addLiteralIfAbsent: literal [
 
 	| idx |
 	idx := self literals identityIndexOf: literal.
@@ -56,7 +59,7 @@ SOMMethodGenerationContext >> addLiteralIfAbsent: literal [
 ]
 
 { #category : #accessing }
-SOMMethodGenerationContext >> addLocalIfAbsent: varName [
+SOMMethodGenerator >> addLocalIfAbsent: varName [
 
 	(self locals includes: varName) ifTrue: [^ false].
 	self locals add: varName.
@@ -64,17 +67,17 @@ SOMMethodGenerationContext >> addLocalIfAbsent: varName [
 ]
 
 { #category : #accessing }
-SOMMethodGenerationContext >> arguments [
+SOMMethodGenerator >> arguments [
 	^ arguments
 ]
 
 { #category : #accessing }
-SOMMethodGenerationContext >> arguments: anObject [
+SOMMethodGenerator >> arguments: anObject [
 	arguments := anObject
 ]
 
 { #category : #assembling }
-SOMMethodGenerationContext >> assemble: holderClass [
+SOMMethodGenerator >> assemble: holderClass [
 
 	| compileClass |
 	compileClass := self onClassSide
@@ -85,7 +88,7 @@ SOMMethodGenerationContext >> assemble: holderClass [
 ]
 
 { #category : #assembling }
-SOMMethodGenerationContext >> assembleIn: universe [
+SOMMethodGenerator >> assembleIn: universe [
 
 	^ self isPrimitive
 		ifTrue: [SOMPrimitive
@@ -105,31 +108,31 @@ SOMMethodGenerationContext >> assembleIn: universe [
 ]
 
 { #category : #bytecode }
-SOMMethodGenerationContext >> bcDup [
+SOMMethodGenerator >> bcDup [
 	
 
 	^ self bytecode add: (SOMBCDup in: self)
 ]
 
 { #category : #bytecode }
-SOMMethodGenerationContext >> bcHalt [
+SOMMethodGenerator >> bcHalt [
 	self bytecode add: SOMBCHalt new.
 ]
 
 { #category : #bytecode }
-SOMMethodGenerationContext >> bcPop [
+SOMMethodGenerator >> bcPop [
 
 	self bytecode add: (SOMBCPop in: self).
 ]
 
 { #category : #bytecode }
-SOMMethodGenerationContext >> bcPopArgumentIndex: idx ctxIndex: ctxIdx [
+SOMMethodGenerator >> bcPopArgumentIndex: idx ctxIndex: ctxIdx [
 
 	self bytecode add: (SOMBCPopArgument in: self index: idx contextIndex: ctxIdx).
 ]
 
 { #category : #bytecode }
-SOMMethodGenerationContext >> bcPopField: fieldName [
+SOMMethodGenerator >> bcPopField: fieldName [
 
 	| idx fieldIdx bc |
 	self assert: (self hasField: fieldName).
@@ -142,19 +145,19 @@ SOMMethodGenerationContext >> bcPopField: fieldName [
 ]
 
 { #category : #bytecode }
-SOMMethodGenerationContext >> bcPopLocalIndex: idx ctxIndex: ctxIdx [
+SOMMethodGenerator >> bcPopLocalIndex: idx ctxIndex: ctxIdx [
 
 	self bytecode add: (SOMBCPopLocal in: self index: idx contextIndex: ctxIdx).
 ]
 
 { #category : #bytecode }
-SOMMethodGenerationContext >> bcPushArgumentIndex: idx ctxIndex: ctxIdx [
+SOMMethodGenerator >> bcPushArgumentIndex: idx ctxIndex: ctxIdx [
 
 	self bytecode add: (SOMBCPushArgument in: self index: idx contextIndex: ctxIdx).
 ]
 
 { #category : #bytecode }
-SOMMethodGenerationContext >> bcPushBlock: method [
+SOMMethodGenerator >> bcPushBlock: method [
 	
 	| idx |
 	idx := self addLiteralIfAbsent: method.
@@ -162,7 +165,7 @@ SOMMethodGenerationContext >> bcPushBlock: method [
 ]
 
 { #category : #bytecode }
-SOMMethodGenerationContext >> bcPushConstant: const [
+SOMMethodGenerator >> bcPushConstant: const [
 	| literalIndex |
 	literalIndex := self addLiteralIfAbsent: const.
 	self bytecode add: (SOMBCPushConstant in: self index: literalIndex).
@@ -170,7 +173,7 @@ SOMMethodGenerationContext >> bcPushConstant: const [
 ]
 
 { #category : #bytecode }
-SOMMethodGenerationContext >> bcPushField: fieldName [
+SOMMethodGenerator >> bcPushField: fieldName [
 
 	| idx fieldIdx bc |
 	self assert: [holder isNil or: [self hasField: fieldName]].
@@ -182,7 +185,7 @@ SOMMethodGenerationContext >> bcPushField: fieldName [
 ]
 
 { #category : #bytecode }
-SOMMethodGenerationContext >> bcPushGlobal: global [
+SOMMethodGenerator >> bcPushGlobal: global [
 
 	| idx |
 	idx := self addLiteralIfAbsent: global.
@@ -190,25 +193,25 @@ SOMMethodGenerationContext >> bcPushGlobal: global [
 ]
 
 { #category : #bytecode }
-SOMMethodGenerationContext >> bcPushLocalIndex: idx ctxIndex: ctxIdx [
+SOMMethodGenerator >> bcPushLocalIndex: idx ctxIndex: ctxIdx [
 
 	self bytecode add: (SOMBCPushLocal in: self index: idx contextIndex: ctxIdx).
 ]
 
 { #category : #bytecode }
-SOMMethodGenerationContext >> bcReturnLocal [
+SOMMethodGenerator >> bcReturnLocal [
 
 	^ self bytecode add: (SOMBCReturnLocal in: self).
 ]
 
 { #category : #bytecode }
-SOMMethodGenerationContext >> bcReturnNonLocal [
+SOMMethodGenerator >> bcReturnNonLocal [
 
 	^ self bytecode add: (SOMBCReturnNonLocal in: self).
 ]
 
 { #category : #bytecode }
-SOMMethodGenerationContext >> bcSend: selector [
+SOMMethodGenerator >> bcSend: selector [
 
 	| idx |
 	self assert: selector isSymbol.
@@ -217,7 +220,7 @@ SOMMethodGenerationContext >> bcSend: selector [
 ]
 
 { #category : #bytecode }
-SOMMethodGenerationContext >> bcSuperSend: selector [
+SOMMethodGenerator >> bcSuperSend: selector [
 
 	| idx |
 	self assert: selector isSymbol.
@@ -226,24 +229,24 @@ SOMMethodGenerationContext >> bcSuperSend: selector [
 ]
 
 { #category : #accessing }
-SOMMethodGenerationContext >> bytecode [
+SOMMethodGenerator >> bytecode [
 	^ bytecode
 ]
 
 { #category : #accessing }
-SOMMethodGenerationContext >> bytecode: anObject [
+SOMMethodGenerator >> bytecode: anObject [
 	bytecode := anObject
 ]
 
 { #category : #bytecode }
-SOMMethodGenerationContext >> bytecodeCount [
+SOMMethodGenerator >> bytecodeCount [
 	^ self bytecode 
 		inject: 0
 		into: [ :sum :ea | sum + ea length ]
 ]
 
 { #category : #printing }
-SOMMethodGenerationContext >> bytecodeString [
+SOMMethodGenerator >> bytecodeString [
 
 	^ String streamContents: [:s |
 		self
@@ -252,7 +255,7 @@ SOMMethodGenerationContext >> bytecodeString [
 ]
 
 { #category : #printing }
-SOMMethodGenerationContext >> bytecodeStringTab: tabWidth stream: s [
+SOMMethodGenerator >> bytecodeStringTab: tabWidth stream: s [
 
 	self bytecode do: [:ea |
 		tabWidth timesRepeat: [s tab].
@@ -265,7 +268,7 @@ SOMMethodGenerationContext >> bytecodeStringTab: tabWidth stream: s [
 ]
 
 { #category : #assembling }
-SOMMethodGenerationContext >> combineSelectorAndArgs [
+SOMMethodGenerator >> combineSelectorAndArgs [
 
 	| parts args |
 	args := self arguments allButFirst. "First is self"
@@ -279,7 +282,7 @@ SOMMethodGenerationContext >> combineSelectorAndArgs [
 ]
 
 { #category : #'stack size' }
-SOMMethodGenerationContext >> computeMaxStackDepth [
+SOMMethodGenerator >> computeMaxStackDepth [
 
 	| depth |
 	depth := 0.
@@ -291,7 +294,7 @@ SOMMethodGenerationContext >> computeMaxStackDepth [
 ]
 
 { #category : #bytecode }
-SOMMethodGenerationContext >> emitSend: selector isSuper: isSuper [
+SOMMethodGenerator >> emitSend: selector isSuper: isSuper [
 
 	isSuper
 		ifTrue: [self bcSuperSend: selector]
@@ -299,7 +302,7 @@ SOMMethodGenerationContext >> emitSend: selector isSuper: isSuper [
 ]
 
 { #category : #lookup }
-SOMMethodGenerationContext >> findVariable: varName context: ctx ifFound: aBlock [
+SOMMethodGenerator >> findVariable: varName context: ctx ifFound: aBlock [
 	| idx isArgument |
 	isArgument := false.
 
@@ -317,28 +320,28 @@ SOMMethodGenerationContext >> findVariable: varName context: ctx ifFound: aBlock
 ]
 
 { #category : #accessing }
-SOMMethodGenerationContext >> finished [
+SOMMethodGenerator >> finished [
 
 	isFinished := true
 ]
 
 { #category : #lookup }
-SOMMethodGenerationContext >> hasField: field [
+SOMMethodGenerator >> hasField: field [
 	^ holder hasField: field
 ]
 
 { #category : #accessing }
-SOMMethodGenerationContext >> holder [
+SOMMethodGenerator >> holder [
 	^ holder
 ]
 
 { #category : #accessing }
-SOMMethodGenerationContext >> holder: anObject [
+SOMMethodGenerator >> holder: anObject [
 	holder := anObject
 ]
 
 { #category : #initialize }
-SOMMethodGenerationContext >> initialize [
+SOMMethodGenerator >> initialize [
 
 	super initialize.
 	self
@@ -353,79 +356,79 @@ SOMMethodGenerationContext >> initialize [
 ]
 
 { #category : #accessing }
-SOMMethodGenerationContext >> isBlockMethod [
+SOMMethodGenerator >> isBlockMethod [
 	^ isBlock
 ]
 
 { #category : #accessing }
-SOMMethodGenerationContext >> isBlockMethod: bool [
+SOMMethodGenerator >> isBlockMethod: bool [
 	isBlock := bool
 ]
 
 { #category : #accessing }
-SOMMethodGenerationContext >> isFinished [
+SOMMethodGenerator >> isFinished [
 
 	^ isFinished
 ]
 
 { #category : #accessing }
-SOMMethodGenerationContext >> isFinished: bool [
+SOMMethodGenerator >> isFinished: bool [
 
 	isFinished := bool
 ]
 
 { #category : #accessing }
-SOMMethodGenerationContext >> isPrimitive [
+SOMMethodGenerator >> isPrimitive [
 	^ isPrimitive
 ]
 
 { #category : #accessing }
-SOMMethodGenerationContext >> isPrimitive: anObject [
+SOMMethodGenerator >> isPrimitive: anObject [
 	isPrimitive := anObject
 ]
 
 { #category : #accessing }
-SOMMethodGenerationContext >> literals [
+SOMMethodGenerator >> literals [
 	^ literals
 ]
 
 { #category : #accessing }
-SOMMethodGenerationContext >> literals: anObject [
+SOMMethodGenerator >> literals: anObject [
 	literals := anObject
 ]
 
 { #category : #accessing }
-SOMMethodGenerationContext >> locals [
+SOMMethodGenerator >> locals [
 	^ locals
 ]
 
 { #category : #accessing }
-SOMMethodGenerationContext >> locals: anObject [
+SOMMethodGenerator >> locals: anObject [
 	locals := anObject
 ]
 
 { #category : #accessing }
-SOMMethodGenerationContext >> onClassSide [
+SOMMethodGenerator >> onClassSide [
 	^ onClassSide
 ]
 
 { #category : #accessing }
-SOMMethodGenerationContext >> onClassSide: anObject [
+SOMMethodGenerator >> onClassSide: anObject [
 	onClassSide := anObject
 ]
 
 { #category : #accessing }
-SOMMethodGenerationContext >> outer [
+SOMMethodGenerator >> outer [
 	^ outer
 ]
 
 { #category : #accessing }
-SOMMethodGenerationContext >> outer: anObject [
+SOMMethodGenerator >> outer: anObject [
 	outer := anObject
 ]
 
 { #category : #printing }
-SOMMethodGenerationContext >> printOn: stream [
+SOMMethodGenerator >> printOn: stream [
 
 
 	self signature ifNil: [
@@ -438,38 +441,38 @@ SOMMethodGenerationContext >> printOn: stream [
 ]
 
 { #category : #bytecode }
-SOMMethodGenerationContext >> removeLastBytecode [
+SOMMethodGenerator >> removeLastBytecode [
 	self bytecode removeLast.
 ]
 
 { #category : #bytecode }
-SOMMethodGenerationContext >> returnSelf [
+SOMMethodGenerator >> returnSelf [
 
 	self bcPushArgumentIndex: 1 ctxIndex: 1.
 	self bcReturnLocal.
 ]
 
 { #category : #accessing }
-SOMMethodGenerationContext >> signature [
+SOMMethodGenerator >> signature [
 	^ signature
 ]
 
 { #category : #accessing }
-SOMMethodGenerationContext >> signature: anObject [
+SOMMethodGenerator >> signature: anObject [
 	signature := anObject
 ]
 
 { #category : #accessing }
-SOMMethodGenerationContext >> somHolder [
+SOMMethodGenerator >> somHolder [
 	^ holder
 ]
 
 { #category : #accessing }
-SOMMethodGenerationContext >> somHolder: anObject [ 
+SOMMethodGenerator >> somHolder: anObject [ 
 	holder := anObject
 ]
 
 { #category : #accessing }
-SOMMethodGenerationContext >> updateLiteralAt: index with: literal [
+SOMMethodGenerator >> updateLiteralAt: index with: literal [
 	self literals at: index put: literal
 ]

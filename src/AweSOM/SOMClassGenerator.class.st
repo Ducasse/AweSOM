@@ -1,11 +1,11 @@
 "
-I'm a kind of representation of a class (the Context suffix in my name is just confusing and has nothing to do with the context of a VM).
+I'm responsible to generate a class from the information given by the parser.
 
 My main method is assembleIn: and assembleIn:stub:
 
 "
 Class {
-	#name : #SOMClassGenerationContext,
+	#name : #SOMClassGenerator,
 	#superclass : #Object,
 	#instVars : [
 		'superName',
@@ -20,19 +20,19 @@ Class {
 }
 
 { #category : #adding }
-SOMClassGenerationContext >> addClassField: fieldName [
+SOMClassGenerator >> addClassField: fieldName [
 
 	classFields add: fieldName
 ]
 
 { #category : #adding }
-SOMClassGenerationContext >> addClassFields: fields [
+SOMClassGenerator >> addClassFields: fields [
 
 	classFields addAll: fields
 ]
 
 { #category : #adding }
-SOMClassGenerationContext >> addField: field [
+SOMClassGenerator >> addField: field [
 
 	self isClassSide
 		ifTrue:  [ classFields add: field ]
@@ -40,7 +40,7 @@ SOMClassGenerationContext >> addField: field [
 ]
 
 { #category : #adding }
-SOMClassGenerationContext >> addFields: fieldNames [
+SOMClassGenerator >> addFields: fieldNames [
 
 	^ self isClassSide
 		ifTrue: [ classFields addAll: fieldNames ]
@@ -48,19 +48,19 @@ SOMClassGenerationContext >> addFields: fieldNames [
 ]
 
 { #category : #adding }
-SOMClassGenerationContext >> addInstanceField: field [
+SOMClassGenerator >> addInstanceField: field [
 
 	instanceFields add: field
 ]
 
 { #category : #adding }
-SOMClassGenerationContext >> addInstanceFields: fields [
+SOMClassGenerator >> addInstanceFields: fields [
 
 	instanceFields addAll: fields
 ]
 
 { #category : #adding }
-SOMClassGenerationContext >> addMethod: methodGenContext [
+SOMClassGenerator >> addMethod: methodGenContext [
 
 	^ self isClassSide
 		ifFalse: [ self instanceMethods add: methodGenContext ]
@@ -70,7 +70,7 @@ SOMClassGenerationContext >> addMethod: methodGenContext [
 ]
 
 { #category : #assembling }
-SOMClassGenerationContext >> assembleIn: universe [
+SOMClassGenerator >> assembleIn: universe [
 
 	^ self
 		assembleIn: universe
@@ -78,7 +78,7 @@ SOMClassGenerationContext >> assembleIn: universe [
 ]
 
 { #category : #assembling }
-SOMClassGenerationContext >> assembleIn: universe stub: classStub [
+SOMClassGenerator >> assembleIn: universe stub: classStub [
 
 	self
 		initInstanceSideOf: classStub in: universe;
@@ -88,19 +88,19 @@ SOMClassGenerationContext >> assembleIn: universe stub: classStub [
 ]
 
 { #category : #accessing }
-SOMClassGenerationContext >> classFields [
+SOMClassGenerator >> classFields [
 
 	^ classFields
 ]
 
 { #category : #accessing }
-SOMClassGenerationContext >> classMethods [
+SOMClassGenerator >> classMethods [
 
 	^ classMethods
 ]
 
 { #category : #assembling }
-SOMClassGenerationContext >> createEmptyClassIn: universe [
+SOMClassGenerator >> createEmptyClassIn: universe [
 	"Load the superclass of the receiver from the source on disc and create an empty class in the current universe with the superclass the loaded class."
 	
 	| superclass |
@@ -113,7 +113,7 @@ SOMClassGenerationContext >> createEmptyClassIn: universe [
 ]
 
 { #category : #adding }
-SOMClassGenerationContext >> fieldIndex: fieldName [
+SOMClassGenerator >> fieldIndex: fieldName [
 
 	^ self isClassSide
 		ifTrue: [ classFields indexOf: fieldName ]
@@ -121,7 +121,7 @@ SOMClassGenerationContext >> fieldIndex: fieldName [
 ]
 
 { #category : #testing }
-SOMClassGenerationContext >> hasField: fieldName [
+SOMClassGenerator >> hasField: fieldName [
 
 	^ self isClassSide
 		ifTrue:  [ self classFields includes: fieldName ]
@@ -129,7 +129,7 @@ SOMClassGenerationContext >> hasField: fieldName [
 ]
 
 { #category : #assembling }
-SOMClassGenerationContext >> initClassSideOf: somClass in: universe [
+SOMClassGenerator >> initClassSideOf: somClass in: universe [
 	"Initialize the class side of the receiver"
 	
 	| fields methods |
@@ -143,7 +143,7 @@ SOMClassGenerationContext >> initClassSideOf: somClass in: universe [
 ]
 
 { #category : #assembling }
-SOMClassGenerationContext >> initFieldsOf: somClass in: universe [
+SOMClassGenerator >> initFieldsOf: somClass in: universe [
 	"Initialize fields of the argument and pay attention that nil default value of fields are somNil and not PharoNil."
 	
 	| nAdditionalFields nilObject |
@@ -159,7 +159,7 @@ SOMClassGenerationContext >> initFieldsOf: somClass in: universe [
 ]
 
 { #category : #assembling }
-SOMClassGenerationContext >> initInstanceSideOf: somClass in: universe [
+SOMClassGenerator >> initInstanceSideOf: somClass in: universe [
 
 	| fields methods |
 	somClass somName: (universe newSymbol: self theName).
@@ -170,7 +170,7 @@ SOMClassGenerationContext >> initInstanceSideOf: somClass in: universe [
 ]
 
 { #category : #initialization }
-SOMClassGenerationContext >> initialize [
+SOMClassGenerator >> initialize [
 
 	super initialize.
 	
@@ -184,61 +184,61 @@ SOMClassGenerationContext >> initialize [
 ]
 
 { #category : #accessing }
-SOMClassGenerationContext >> instanceFields [
+SOMClassGenerator >> instanceFields [
 
 	^ instanceFields
 ]
 
 { #category : #accessing }
-SOMClassGenerationContext >> instanceFields: anObject [
+SOMClassGenerator >> instanceFields: anObject [
 
 	instanceFields := anObject
 ]
 
 { #category : #accessing }
-SOMClassGenerationContext >> instanceMethods [
+SOMClassGenerator >> instanceMethods [
 
 	^ instanceMethods
 ]
 
 { #category : #accessing }
-SOMClassGenerationContext >> isClassSide [
+SOMClassGenerator >> isClassSide [
 
 	^ isClassSide
 ]
 
 { #category : #accessing }
-SOMClassGenerationContext >> isClassSide: anObject [
+SOMClassGenerator >> isClassSide: anObject [
 
 	isClassSide := anObject
 ]
 
 { #category : #accessing }
-SOMClassGenerationContext >> superName [
+SOMClassGenerator >> superName [
 
 	^ superName
 ]
 
 { #category : #accessing }
-SOMClassGenerationContext >> superName: anObject [
+SOMClassGenerator >> superName: anObject [
 
 	superName := anObject
 ]
 
 { #category : #accessing }
-SOMClassGenerationContext >> theName [
+SOMClassGenerator >> theName [
 
 	^ theName
 ]
 
 { #category : #accessing }
-SOMClassGenerationContext >> theName: aString [
+SOMClassGenerator >> theName: aString [
 
 	theName := aString
 ]
 
 { #category : #accessing }
-SOMClassGenerationContext >> toggleClassSide [
+SOMClassGenerator >> toggleClassSide [
 
 	self isClassSide: self isClassSide not
 ]

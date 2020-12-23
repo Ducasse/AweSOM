@@ -295,7 +295,7 @@ SOMMethodParser >> expression [
 { #category : #helper }
 SOMMethodParser >> fakeCgenc [
 
-	cgenc := SOMClassGenerationContext new
+	cgenc := SOMClassGenerator new
 			theName: #Dummy;
 			yourself.
 ]
@@ -303,7 +303,7 @@ SOMMethodParser >> fakeCgenc [
 { #category : #helper }
 SOMMethodParser >> fakeMgenc [
 
-	mgenc := (SOMMethodGenerationContext named: #dummy)
+	mgenc := (SOMMethodGenerator named: #dummy)
 		somHolder: cgenc;
 		yourself
 ]
@@ -572,7 +572,7 @@ SOMMethodParser >> methodBody [
 
 { #category : #patterns }
 SOMMethodParser >> methodName [
-	mgenc := SOMMethodGenerationContext new.
+	mgenc := SOMMethodGenerator new.
 	mgenc addArgumentIfAbsent: #self.
 	mgenc holder: cgenc.
 	
@@ -586,7 +586,7 @@ SOMMethodParser >> methodName [
 { #category : #helper }
 SOMMethodParser >> methodParser [
 	^ super methodParser
-		mgenc: (SOMMethodGenerationContext blockIn: mgenc);
+		mgenc: (SOMMethodGenerator blockIn: mgenc);
 		yourself
 ]
 
