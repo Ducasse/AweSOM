@@ -71,7 +71,8 @@ SOMClassGenerator >> addMethod: methodGenContext [
 
 { #category : #assembling }
 SOMClassGenerator >> assembleIn: universe [
-
+	"Define in the universe a SOMClass object. Note that the superclass of this class will be loaded from file."
+	
 	^ self
 		assembleIn: universe
 		stub: (self createEmptyClassIn: universe)
