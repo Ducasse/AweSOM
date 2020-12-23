@@ -88,6 +88,7 @@ SOMInterpreterTest >> test01Bootstrap [
 
 { #category : #tests }
 SOMInterpreterTest >> test02PushConstant [
+
 	self startInterpreterWith: 
 		(self assembleMethod: 'test' withByteCodes: [:mgenc | 
 			mgenc 

@@ -114,12 +114,11 @@ SOMUniverse >> allocateBasicObjects [
 
 { #category : #bootstrapping }
 SOMUniverse >> bootstrapFrameFor: receiver withArguments: args [
+
 	| frame |
 	frame := self interpreter pushNewFrameWithMethod: self bootstrapMethod.
 	frame push: receiver.
-	args ifNotNil: [
-		frame push: args ].
-
+	args ifNotNil: [ frame push: args ].
 	^ frame
 
 ]
@@ -143,7 +142,7 @@ SOMUniverse >> bootstrapMethod [
 SOMUniverse >> bootstrapWithArguments: args [ 
 
 	self 
-		bootstrapWithEntryPoint: ((self globalSystemClass) lookupInvokable: #initialize:)
+		bootstrapWithEntryPoint: (self globalSystemClass lookupInvokable: #initialize:)
 		on: (self globalAt: #system)
 		withArguments: args.
 ]
@@ -158,7 +157,7 @@ SOMUniverse >> bootstrapWithEntryPoint: invokable on: receiver withArguments: ar
 	^ bootstrapFrame
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #'class path' }
 SOMUniverse >> classpathPrepend: aString [
 	| cp |
 	cp := self class classPaths asOrderedCollection.
@@ -220,7 +219,7 @@ SOMUniverse >> exitCode [
 	^ exitCode
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #'class path' }
 SOMUniverse >> getPathClassExt: aString [
   " take argument of the form '../foo/Test.som' and return
     '../foo', 'Test', 'som'"
@@ -241,18 +240,18 @@ SOMUniverse >> getPathClassExt: aString [
 
 ]
 
-{ #category : #'gobal accessing' }
+{ #category : #'global accessing' }
 SOMUniverse >> globalAt: aSymbol [ 
 
 	^ globals at: aSymbol
 ]
 
-{ #category : #'gobal accessing' }
+{ #category : #'global accessing' }
 SOMUniverse >> globalAt: aSymbol ifAbsent: aBlock [
 	^ globals at: aSymbol ifAbsent: aBlock.
 ]
 
-{ #category : #'gobal accessing' }
+{ #category : #'global accessing' }
 SOMUniverse >> globalAt: aSymbol ifAbsentPut: aBlock [
 "Treat nil values as absent values"
 	| result |
@@ -260,7 +259,7 @@ SOMUniverse >> globalAt: aSymbol ifAbsentPut: aBlock [
 	^ result
 ]
 
-{ #category : #'gobal accessing' }
+{ #category : #'global accessing' }
 SOMUniverse >> globalAt: aSymbol put: anObject [ 
 
 	^ globals 
@@ -268,65 +267,65 @@ SOMUniverse >> globalAt: aSymbol put: anObject [
 		put: anObject
 ]
 
-{ #category : #'gobal accessing' }
+{ #category : #'global accessing' }
 SOMUniverse >> globalBlockClass [
 	^ somBlockClass
 ]
 
-{ #category : #'gobal accessing' }
+{ #category : #'global accessing' }
 SOMUniverse >> globalBlockClass: numArgs [
 	^ somBlockClasses at: numArgs + 1
 
 ]
 
-{ #category : #'gobal accessing' }
+{ #category : #'global accessing' }
 SOMUniverse >> globalClassClass [
 	^ somClassClass
 ]
 
-{ #category : #'gobal accessing' }
+{ #category : #'global accessing' }
 SOMUniverse >> globalDoubleClass [
 	^ somDoubleClass
 ]
 
-{ #category : #'gobal accessing' }
+{ #category : #'global accessing' }
 SOMUniverse >> globalFalse [
 	^ somFalseObject
 ]
 
-{ #category : #'gobal accessing' }
+{ #category : #'global accessing' }
 SOMUniverse >> globalIntegerClass [
 	^ somIntegerClass
 ]
 
-{ #category : #'gobal accessing' }
+{ #category : #'global accessing' }
 SOMUniverse >> globalMetaclassClass [
 	^ somMetaclassClass
 ]
 
-{ #category : #'gobal accessing' }
+{ #category : #'global accessing' }
 SOMUniverse >> globalNil [
 
 	^ somNilObject
 ]
 
-{ #category : #'gobal accessing' }
+{ #category : #'global accessing' }
 SOMUniverse >> globalSystemClass [
 	^ somSystemClass
 ]
 
-{ #category : #'gobal accessing' }
+{ #category : #'global accessing' }
 SOMUniverse >> globalTrue [
 	^ somTrueObject
 ]
 
-{ #category : #'gobal accessing' }
+{ #category : #'global accessing' }
 SOMUniverse >> globals [
 
 	^ globals
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #'class path' }
 SOMUniverse >> handleArguments: args [
 	| gotClasspath remainingArgs i |
 	gotClasspath := false.
@@ -370,7 +369,7 @@ SOMUniverse >> handleArguments: args [
 	^ remainingArgs
 ]
 
-{ #category : #'gobal accessing' }
+{ #category : #'global accessing' }
 SOMUniverse >> hasGlobalAt: aSymbol [ 
 	^ globals includesKey: aSymbol
 ]
@@ -391,6 +390,7 @@ SOMUniverse >> initialize [
 { #category : #initializing }
 SOMUniverse >> initializeGlobalsDict: systemObject [
 	"Put special objects and classess into the dictionary of globals"
+	
 	self globalAt: #nil put: somNilObject.
 	self globalAt: #true put: somTrueObject.
 	self globalAt: #false put: somFalseObject.
@@ -480,6 +480,7 @@ SOMUniverse >> initializeSystemClass: systemClass superclass: superClass named: 
 
 { #category : #initializing }
 SOMUniverse >> initializeTestObjectSystem [
+
 	self allocateBasicObjects.
 	
 	somBlockClass := self newSystemClass.
@@ -487,7 +488,6 @@ SOMUniverse >> initializeTestObjectSystem [
 	somBlockClasses at: 1 put: somBlockClass.
 	somBlockClasses at: 2 put: somBlockClass.
 	somBlockClasses at: 3 put: somBlockClass.
-
 
 	self initializeGlobalsDict: somNilObject.
 
@@ -579,7 +579,7 @@ SOMUniverse >> newArrayWithAll: collection [
 		withAll: collection
 ]
 
-{ #category : #'gobal accessing' }
+{ #category : #'global accessing' }
 SOMUniverse >> newBlock: blockMethod in: aSomFrame [
 
 	^ (SOMBlock inUniverse: self)
@@ -601,6 +601,7 @@ SOMUniverse >> newInstance: aSomClass [
 
 { #category : #initializing }
 SOMUniverse >> newMetaclassClass [
+
 	| result |
 	"Allocate the metaclass classes"
 	result := SOMClass inUniverse: self.
@@ -677,7 +678,7 @@ SOMUniverse >> quit: errorCode [
 
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #'class path' }
 SOMUniverse >> setupClasspath: classpathString [
 	| cp |
 	cp := ':' split: classpathString.
@@ -685,15 +686,15 @@ SOMUniverse >> setupClasspath: classpathString [
 
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #'class path' }
 SOMUniverse >> setupDefaultClasspath [
 	self setupClasspath: '.'
 ]
 
 { #category : #initializing }
 SOMUniverse >> sortedSubClassesOf: class [
-
 	"Sort by inheritance hierarchy"
+	
 	^ (SortedCollection sortBlock: [:a :b | (a inheritsFrom: b) not])
 		addAll: class withAllSubclasses;
 		sortTopologically;
@@ -707,7 +708,7 @@ SOMUniverse >> start: arguments [
 	remainingArgs := self handleArguments: arguments.
  	self initializeObjectSystem.
 	wrappedArguments := remainingArgs collect: [ :arg | self newString: arg].
-	self bootstrapWithArguments: (SOMArray inUniverse: self withAll: wrappedArguments).
+	self bootstrapWithArguments: (SOMArray inUniverse: self withAll: wrappedArguments)
 ]
 
 { #category : #initializing }
@@ -726,7 +727,7 @@ SOMUniverse >> start: className method: methodName [
 
 ]
 
-{ #category : #'gobal accessing' }
+{ #category : #'global accessing' }
 SOMUniverse >> symbolFor: global [
 
 	self flag: #rkrk. "Should return SOMSymbol!!?"

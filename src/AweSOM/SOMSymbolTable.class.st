@@ -15,14 +15,14 @@ SOMSymbolTable class >> in: universe [
 		yourself.
 ]
 
-{ #category : #'as yet unclassified' }
-SOMSymbolTable >> somSymbolFor: squeakSymbol [
+{ #category : #accessing }
+SOMSymbolTable >> somSymbolFor: aPharoSymbol [
 
 	^ self
-		at: squeakSymbol 
+		at: aPharoSymbol 
 		ifAbsentPut: [SOMSymbol
 			inUniverse: self universe
-			string: squeakSymbol].
+			string: aPharoSymbol].
 ]
 
 { #category : #accessing }

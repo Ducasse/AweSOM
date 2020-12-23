@@ -26,6 +26,8 @@ SOMBytecode class >> in: methodGenerationContext [
 
 { #category : #interpreting }
 SOMBytecode >> interpret: interp [
+	"Double dispatch with the interpreter."
+
 	Error signal: 'Needs to be overridden'
 ]
 

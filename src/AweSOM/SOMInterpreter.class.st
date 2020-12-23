@@ -34,7 +34,7 @@ SOMInterpreter >> currentBytecode: anObject [
 
 { #category : #'bytecode processing' }
 SOMInterpreter >> doDup [
-	"duplicate the topmost element of the stack"
+	"Duplicate the topmost element of the stack."
 	
 	self somFrame 
 		push: (self somFrame stackElementAtIndex: 1)
@@ -48,50 +48,53 @@ SOMInterpreter >> doHalt [
 
 { #category : #'bytecode processing' }
 SOMInterpreter >> doPop [
-	"pops the topmost element of the stack"
+	"Pops the topmost element of the stack."
 	
 	self somFrame pop
 ]
 
 { #category : #'bytecode processing' }
 SOMInterpreter >> doPopArgument [
-	"pops the topmost stack element into the argument which is identified by the slot index and context level in the bytecode"
+	"Pops the topmost stack element into the argument which is identified by the slot index and context level in the bytecode"
 	
 	self somFrame 
-		argumentAtIndex: (self currentBytecode index)
-		contextLevel: (self currentBytecode contextIndex)
-		put: (self somFrame pop)
+		argumentAtIndex: self currentBytecode index
+		contextLevel: self currentBytecode contextIndex
+		put: self somFrame pop
 ]
 
 { #category : #'bytecode processing' }
 SOMInterpreter >> doPopField [
-	"pops the topmost stack element into the field which is identified by field index in the bytecode"
+	"Pops the topmost stack element into the field which is identified by field index in the bytecode"
 	
 	self somCurrentObject
-		fieldAtIndex: (self currentBytecode fieldIndex)
+		fieldAtIndex: self currentBytecode fieldIndex
 		put: self somFrame pop
 ]
 
 { #category : #'bytecode processing' }
 SOMInterpreter >> doPopLocal [
+
 	| localSlot contextLevel |
 	localSlot := self currentBytecode index.
 	contextLevel := self currentBytecode contextIndex.
 	self somFrame 
 			localAtIndex: localSlot
 			contextLevel: contextLevel
-			put: (self somFrame pop)
+			put: self somFrame pop
 ]
 
 { #category : #'bytecode processing' }
 SOMInterpreter >> doPushArgument [
-	"pushes the argument onto the stack which is identified by the slot index and context level in the next two bytes of the bytecode"
+	"Pushes the argument onto the stack which is identified by the slot index and context level in the next two bytes of the bytecode"
+
 	| slot contextLevel |
 	slot := self currentBytecode index.
 	contextLevel := self currentBytecode contextIndex.
-	self somFrame push: (self somFrame 
-			argumentAtIndex: slot
-			contextLevel: contextLevel)
+	self somFrame 
+			push: (self somFrame 
+						argumentAtIndex: slot
+						contextLevel: contextLevel)
 ]
 
 { #category : #'bytecode processing' }
@@ -106,7 +109,8 @@ SOMInterpreter >> doPushBlock [
 
 { #category : #'bytecode processing' }
 SOMInterpreter >> doPushConstant [
-	self somFrame push: (self currentBytecode literalValue)
+
+	self somFrame push: self currentBytecode literalValue
 ]
 
 { #category : #'bytecode processing' }
@@ -114,7 +118,7 @@ SOMInterpreter >> doPushField [
 
 	self somFrame push:
 		(self somCurrentObject fieldAtIndex: 
-			(self currentBytecode fieldIndex)).
+				self currentBytecode fieldIndex)
 ]
 
 { #category : #'bytecode processing' }
@@ -133,23 +137,27 @@ SOMInterpreter >> doPushGlobal [
 
 { #category : #'bytecode processing' }
 SOMInterpreter >> doPushLocal [
+
 	| localSlot contextLevel |
 	localSlot := self currentBytecode index.
 	contextLevel := self currentBytecode contextIndex.
-	self somFrame push: (self somFrame 
-			localAtIndex: localSlot
-			contextLevel: contextLevel)
+	self somFrame 
+		push: (self somFrame 
+					localAtIndex: localSlot
+					contextLevel: contextLevel)
 ]
 
 { #category : #'bytecode processing' }
 SOMInterpreter >> doReturnLocal [
-	"pops the topmost element of the stack and treats it as the return value"
+	"Pops the topmost element of the stack and treats it as the return value."
+	
 	self popFrameAndPushResult: self somFrame pop
 ]
 
 { #category : #'bytecode processing' }
 SOMInterpreter >> doReturnNonLocal [
-	"pops the topmost element of the stack and treats it as the return value"
+	"Pops the topmost element of the stack and treats it as the return value"
+	
 	| result context |
 	result := self somFrame pop.
 	context := self somFrame outerContext.
@@ -244,6 +252,7 @@ SOMInterpreter >> loggingToTranscript [
 
 { #category : #'frame manipulation' }
 SOMInterpreter >> popFrame [
+
 	| currentFrame |
 	currentFrame := self somFrame.
 	self somFrame: currentFrame somPreviousFrame.
@@ -265,7 +274,7 @@ SOMInterpreter >> popFrameAndPushResult: result [
 { #category : #printing }
 SOMInterpreter >> printBytecodes [
 	
-	self printBytecodesOn: loggingStream.
+	self printBytecodesOn: loggingStream
 
 ]
 
@@ -383,6 +392,7 @@ SOMInterpreter >> sendDoesNotUnderstand: signature [
 SOMInterpreter >> sendUnknownGlobal: globalName [ 
 	"check if current frame is big enough for this unplanned Send"
 	"unknownGlobal: needs 2 slots, one for this and one for globalName"
+	
 	self somFrame remainingStackSize < 2
 		ifTrue: [self somFrame resize: (self somFrame size + 2)].
 		
@@ -421,7 +431,8 @@ SOMInterpreter >> showInspection [
 
 { #category : #accessing }
 SOMInterpreter >> somCurrentObject [
-	^ (self somFrame outerContext) somCurrentObject
+	
+	^ self somFrame outerContext somCurrentObject
 ]
 
 { #category : #accessing }
@@ -468,7 +479,8 @@ SOMInterpreter >> stepBytecode [
 
 { #category : #initialization }
 SOMInterpreter >> stop [
-	"rolls back to the first frame which contains the halt command; saves current frame for debug purposes"
+	"Rolls back to the first frame which contains the halt command; saves current frame for debug purposes."
+	
 	stopped := true
 ]
 

@@ -54,7 +54,7 @@ SOMFrame >> bytecodeIndex: anObject [
 	bytecodeIndex := anObject
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #'stack manipulation' }
 SOMFrame >> clearPreviousFrame [
 	self somPreviousFrame: self universe globalNil
 ]
