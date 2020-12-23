@@ -88,26 +88,68 @@ Class {
 	#category : #'AweSOM-Parsing'
 }
 
-{ #category : #patterns }
-SOMClassParser >> classBody [
-	self expect: #newTerm.
-	
-	self classSide.
-	
-	self classInstanceSwitch ifTrue: [
-		cgenc toggleClassSide.
-		self classSide.].
-	
-	self expect: #endTerm.
-]
-
-{ #category : #patterns }
+{ #category : #parsing }
 SOMClassParser >> classInstanceSwitch [
 	^ self accept: #seperator.
 ]
 
 { #category : #patterns }
-SOMClassParser >> classSide [
+SOMClassParser >> foreignParseMethod [
+	| parser result |
+	parser := self methodParser.
+	parser parseState: self parseState.
+	
+	result := parser apply: #method.
+	
+	cgenc addMethod: result.
+	self parseState: parser parseState.
+	^ result
+]
+
+{ #category : #initialization }
+SOMClassParser >> initialize [
+	super initialize.
+	
+	self cgenc: SOMClassGenerationContext new.
+]
+
+{ #category : #helper }
+SOMClassParser >> methodParser [
+
+	^ super methodParser
+		cgenc: self cgenc;
+		yourself.
+]
+
+{ #category : #parsing }
+SOMClassParser >> parseClass [
+	"Parse a class definition and return its generator/compiler."
+	
+	self parseClassDefinition.
+	^ cgenc
+]
+
+{ #category : #patterns }
+SOMClassParser >> parseClassBody [
+	self expect: #newTerm.
+	
+	self parseClassSide.
+	
+	self classInstanceSwitch ifTrue: [
+		cgenc toggleClassSide.
+		self parseClassSide ].
+	
+	self expect: #endTerm.
+]
+
+{ #category : #patterns }
+SOMClassParser >> parseClassDefinition [
+	self parseClassStart.
+	self parseClassBody.
+]
+
+{ #category : #patterns }
+SOMClassParser >> parseClassSide [
 	self vars.
 	
 	[self symIsIdentifier     or: [
@@ -119,7 +161,7 @@ SOMClassParser >> classSide [
 ]
 
 { #category : #patterns }
-SOMClassParser >> classStart [
+SOMClassParser >> parseClassStart [
 	| superName |
 	cgenc theName: self identifier.
 	
@@ -145,46 +187,6 @@ SOMClassParser >> classStart [
 	
 
 		
-]
-
-{ #category : #patterns }
-SOMClassParser >> classdef [
-	self classStart.
-	self classBody.
-]
-
-{ #category : #patterns }
-SOMClassParser >> foreignParseMethod [
-	| parser result |
-	parser := self methodParser.
-	parser parseState: self parseState.
-	
-	result := parser apply: #method.
-	
-	cgenc addMethod: result.
-	self parseState: parser parseState.
-	^ result
-]
-
-{ #category : #'initialize-release' }
-SOMClassParser >> initialize [
-	super initialize.
-	
-	self cgenc: SOMClassGenerationContext new.
-]
-
-{ #category : #helper }
-SOMClassParser >> methodParser [
-
-	^ super methodParser
-		cgenc: self cgenc;
-		yourself.
-]
-
-{ #category : #parsing }
-SOMClassParser >> start [
-	self classdef.
-	^ cgenc
 ]
 
 { #category : #patterns }

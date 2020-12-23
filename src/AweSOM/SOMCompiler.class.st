@@ -1,3 +1,7 @@
+"
+I'm facade delegating to SOMMethodGenerationContext (a method compiler) and SOMClassGenerationContext.
+My main API method is loadAndCompileSOMClass:stub:
+"
 Class {
 	#name : #SOMCompiler,
 	#superclass : #Object,
@@ -25,36 +29,39 @@ SOMCompiler >> classFileExtension [
 
 { #category : #accessing }
 SOMCompiler >> classPaths [
+
 	^ classPaths
 ]
 
 { #category : #accessing }
 SOMCompiler >> classPaths: anObject [
+
 	classPaths := anObject
 ]
 
 { #category : #compiling }
 SOMCompiler >> compileSOMClassSource: source stub: classStubOrNil from: aFileName [
 
-	| cgenc |
-	cgenc := (SOMClassParser inUniverse: universe onSource: source from: aFileName) start.
+	| classGenerator |
+	classGenerator := (SOMClassParser inUniverse: universe onSource: source from: aFileName) parseClass.
 	^ classStubOrNil
-		ifNil: [cgenc assembleIn: universe]
-		ifNotNil: [cgenc assembleIn: universe stub: classStubOrNil].
+		ifNil: [ classGenerator assembleIn: universe]
+		ifNotNil: [ classGenerator assembleIn: universe stub: classStubOrNil].
 ]
 
 { #category : #loading }
 SOMCompiler >> loadAndCompileSOMClass: className stub: classStubOrNil [
 
 	| sourceAndFile |
-	sourceAndFile := self sourceOfClassFile: className.
+	sourceAndFile := self sourceAndClassFileOf: className.
 	sourceAndFile ifNil: [^ nil].
 	^ self compileSOMClassSource: (sourceAndFile at: 1) stub: classStubOrNil from: (sourceAndFile at: 2).
 ]
 
 { #category : #'file access' }
-SOMCompiler >> sourceOfClassFile: className [
-
+SOMCompiler >> sourceAndClassFileOf: className [
+	"Return an array with the source and the class file of the corresponding file."
+	
 	| classFile theDir source stream |
 	classFile := className , self classFileExtension.
 	theDir := (self classPaths
@@ -65,16 +72,17 @@ SOMCompiler >> sourceOfClassFile: className [
 	stream := (theDir resolveString: classFile) readStream.
 	source := stream contents.
 	stream close.
-	^ {source. classFile}
+	^ {source . classFile}
 ]
 
 { #category : #accessing }
 SOMCompiler >> universe [
+
 	^ universe
 ]
 
 { #category : #accessing }
-SOMCompiler >> universe: anObject [
+SOMCompiler >> universe: aSOMUniverse [
 
-	universe := anObject
+	universe := aSOMUniverse
 ]

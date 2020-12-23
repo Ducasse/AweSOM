@@ -539,7 +539,9 @@ SOMUniverse >> loadSOMClass: className [
 
 { #category : #loading }
 SOMUniverse >> loadSOMClass: className stub: stub [
-	"Load the class named className from disc and install it in the universe."
+	"Load the class named className from disc and install it in the universe.
+	The stub is potentially an empty version of the class that we are loading. 
+	This is useful to handle cyclic reference in the bootstrap."
 	
 	^ self 
 		globalAt: className 

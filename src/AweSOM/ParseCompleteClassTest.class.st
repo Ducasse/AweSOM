@@ -176,7 +176,7 @@ System = (
 ParseCompleteClassTest >> test01parseSystem [
 
 	self setUpParser: self classSystem.
-	parser start.
+	parser parseClass.
 	parser cgenc.
 	"self halt."
 ]
@@ -185,7 +185,7 @@ ParseCompleteClassTest >> test01parseSystem [
 ParseCompleteClassTest >> test02parseObject [
 
 	self setUpParser: self classObject.
-	parser start.
+	parser parseClass.
 	parser cgenc.
 	"self halt."
 ]

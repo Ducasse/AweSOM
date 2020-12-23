@@ -1,6 +1,8 @@
 "
 I'm a kind of representation of a class (the Context suffix in my name is just confusing and has nothing to do with the context of a VM).
 
+My main method is assembleIn: and assembleIn:stub:
+
 "
 Class {
 	#name : #SOMClassGenerationContext,
@@ -114,7 +116,7 @@ SOMClassGenerationContext >> createEmptyClassIn: universe [
 SOMClassGenerationContext >> fieldIndex: fieldName [
 
 	^ self isClassSide
-		ifTrue:  [ classFields indexOf: fieldName ]
+		ifTrue: [ classFields indexOf: fieldName ]
 		ifFalse: [ instanceFields indexOf: fieldName ]
 ]
 
