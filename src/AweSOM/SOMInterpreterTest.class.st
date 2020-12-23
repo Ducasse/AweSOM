@@ -52,7 +52,7 @@ SOMInterpreterTest >> compileMethod: source [
 SOMInterpreterTest >> setUp [
 
 	super setUp.
-	interpreter := universe interpreter.
+	interpreter := universe interpreter
 ]
 
 { #category : #helper }

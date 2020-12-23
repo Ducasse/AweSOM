@@ -6,7 +6,8 @@ Class {
 		'universe',
 		'currentBytecode',
 		'stoppedFrame',
-		'stopped'
+		'stopped',
+		'loggingStream'
 	],
 	#category : #'AweSOM-Interpreter'
 }
@@ -194,6 +195,7 @@ SOMInterpreter >> doSend [
 SOMInterpreter >> doStep [
 
 	| bytecodeIndex originalBytecode |
+	self flag: #YouAreDeadCode.
 	(self currentBytecode owningFrames includes: self somFrame)
 		ifFalse: [
 			"if we are not in the right frame; execute the normal bytecode"
@@ -227,6 +229,19 @@ SOMInterpreter >> doSuperSend [
 		toClazz: superClazz
 ]
 
+{ #category : #initialization }
+SOMInterpreter >> initialize [ 
+	super initialize.
+	loggingStream := WriteStream on: ''.
+	self loggingToTranscript
+]
+
+{ #category : #printing }
+SOMInterpreter >> loggingToTranscript [
+
+	loggingStream := Transcript 
+]
+
 { #category : #'frame manipulation' }
 SOMInterpreter >> popFrame [
 	| currentFrame |
@@ -250,12 +265,13 @@ SOMInterpreter >> popFrameAndPushResult: result [
 { #category : #printing }
 SOMInterpreter >> printBytecodes [
 	
-	self printBytecodesOn: Transcript.
-	Transcript endEntry
+	self printBytecodesOn: loggingStream.
+
 ]
 
 { #category : #printing }
 SOMInterpreter >> printBytecodesOn: stream [
+
 	| currentFrame |
 	
 	currentFrame := frame.
@@ -269,8 +285,8 @@ SOMInterpreter >> printBytecodesOn: stream [
 { #category : #printing }
 SOMInterpreter >> printFullStacks [
 	
-	self printFullStacksOn: Transcript.
-	Transcript endEntry
+	self printFullStacksOn: loggingStream
+
 ]
 
 { #category : #printing }
@@ -288,8 +304,8 @@ SOMInterpreter >> printFullStacksOn: stream [
 { #category : #printing }
 SOMInterpreter >> printStack [
 	
-	self printStackOn: Transcript.
-	Transcript endEntry
+	self printStackOn: loggingStream
+	
 ]
 
 { #category : #printing }
@@ -314,9 +330,9 @@ SOMInterpreter >> printStackOn: stream [
 
 { #category : #'frame manipulation' }
 SOMInterpreter >> pushNewFrameWithMethod: method [ 
-
-	"creates a new frame encapsulating the given method
+	"Creates a new frame encapsulating the given method
 	and sets the needed length of its stack"
+	
 	| frameLength |
 	frameLength := method numberOfArguments
 		+ method numberOfLocals
@@ -363,9 +379,8 @@ SOMInterpreter >> sendDoesNotUnderstand: signature [
 				{universe newSymbol: signature. arguments})	
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #'message dispatch' }
 SOMInterpreter >> sendUnknownGlobal: globalName [ 
-
 	"check if current frame is big enough for this unplanned Send"
 	"unknownGlobal: needs 2 slots, one for this and one for globalName"
 	self somFrame remainingStackSize < 2
