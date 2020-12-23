@@ -1,3 +1,9 @@
+"
+I represent bytecode of the SOM language.
+I'm in the double dispatch situation with the interpreter. 
+The language interpreter calls my interpret: method to activate my semantics that it implements in respective methods. 
+I also provide a way to compute the stack depth required by the execution frame.
+"
 Class {
 	#name : #SOMBytecode,
 	#superclass : #Object,
