@@ -1,10 +1,10 @@
 Class {
 	#name : #ParseCompleteClassTest,
 	#superclass : #ParseClassTest,
-	#category : #'AweSOM-Compiler-Test'
+	#category : #'AweSOM-Parsing-Test'
 }
 
-{ #category : #'as yet unclassified' }
+{ #category : #samples }
 ParseCompleteClassTest >> classObject [
 
 	^ 'Object = nil (
@@ -74,7 +74,7 @@ ParseCompleteClassTest >> classObject [
 )'
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #samples }
 ParseCompleteClassTest >> classSystem [
 
 	^ '"

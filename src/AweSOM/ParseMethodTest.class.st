@@ -1,7 +1,7 @@
 Class {
 	#name : #ParseMethodTest,
 	#superclass : #ParseClassTest,
-	#category : #'AweSOM-Compiler-Test'
+	#category : #'AweSOM-Parsing-Test'
 }
 
 { #category : #running }

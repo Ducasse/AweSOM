@@ -1,3 +1,6 @@
+"
+I'm a king of global namespace mix kitchen sink with globally accessible functionality like Smalltalk in Pharo. 
+"
 Class {
 	#name : #SOMUniverse,
 	#superclass : #Object,
@@ -529,18 +532,22 @@ SOMUniverse >> loadAndStoreSOMClass: className [
 
 { #category : #loading }
 SOMUniverse >> loadSOMClass: className [
-
+	"Load the class named classNamed from disc"
+	
 	^ self loadSOMClass: className stub: nil
 ]
 
 { #category : #loading }
 SOMUniverse >> loadSOMClass: className stub: stub [
+	"Load the class named className from disc and install it in the universe."
+	
+	^ self 
+		globalAt: className 
+		ifAbsentPut: [
+			self compiler
+				loadAndCompileSOMClass: className
+				stub: stub ]
 
-	^ self globalAt: className ifAbsentPut: [
-		self compiler
-			loadAndCompileSOMClass: className
-			stub: stub ]
-.
 	
 ]
 

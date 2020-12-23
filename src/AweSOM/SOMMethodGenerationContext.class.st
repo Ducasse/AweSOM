@@ -1,3 +1,7 @@
+"
+I'm a kind of representation of a some method (the Context suffix in my name is just confusing and has nothing to do with the context of a VM).
+I better name would be SOMMethodDescriptor.
+"
 Class {
 	#name : #SOMMethodGenerationContext,
 	#superclass : #Object,

@@ -1,3 +1,6 @@
+"
+I'm the root of class and method parsers.
+"
 Class {
 	#name : #SOMParser,
 	#superclass : #Object,
@@ -16,7 +19,7 @@ Class {
 		'KeywordSelectorSyms',
 		'SingleOpSyms'
 	],
-	#category : #'AweSOM-Compiler'
+	#category : #'AweSOM-Parsing'
 }
 
 { #category : #'instance creation' }
@@ -111,7 +114,7 @@ SOMParser >> identifier [
 	^ s
 ]
 
-{ #category : #'initialize-release' }
+{ #category : #initialization }
 SOMParser >> initialize [
 	super initialize.
 	sym := #none.
@@ -182,7 +185,7 @@ SOMParser >> stream: aReadStream [
 	self getSym.
 ]
 
-{ #category : #'initialize-release' }
+{ #category : #initialization }
 SOMParser >> streamClass [
 
 	^ ReadWriteStream 

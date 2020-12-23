@@ -1,3 +1,6 @@
+"
+I'm a lexer for SOM Smalltalk.
+"
 Class {
 	#name : #SOMLexer,
 	#superclass : #Object,
@@ -14,7 +17,7 @@ Class {
 		'buf',
 		'bufP'
 	],
-	#category : #'AweSOM-Compiler'
+	#category : #'AweSOM-Parsing'
 }
 
 { #category : #'instance creation' }

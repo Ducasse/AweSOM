@@ -4,7 +4,7 @@ Class {
 	#instVars : [
 		'bytecode'
 	],
-	#category : #'AweSOM-Compiler-Test'
+	#category : #'AweSOM-Parsing-Test'
 }
 
 { #category : #assertion }
@@ -39,7 +39,7 @@ ParseBytecodeTest >> parserClass [
 	^ SOMMethodParser
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #running }
 ParseBytecodeTest >> setUpParser: source [
 
 	super setUpParser: source.

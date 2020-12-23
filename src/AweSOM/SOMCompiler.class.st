@@ -75,5 +75,6 @@ SOMCompiler >> universe [
 
 { #category : #accessing }
 SOMCompiler >> universe: anObject [
+
 	universe := anObject
 ]

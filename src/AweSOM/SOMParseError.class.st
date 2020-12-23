@@ -16,7 +16,7 @@ Class {
 		'foundSym',
 		'expectedSym'
 	],
-	#category : #'AweSOM-Compiler'
+	#category : #'AweSOM-Parsing'
 }
 
 { #category : #signalling }

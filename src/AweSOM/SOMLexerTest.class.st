@@ -1,7 +1,7 @@
 Class {
 	#name : #SOMLexerTest,
 	#superclass : #TestCaseWithUniverse,
-	#category : #'AweSOM-Compiler-Test'
+	#category : #'AweSOM-Parsing-Test'
 }
 
 { #category : #tests }
