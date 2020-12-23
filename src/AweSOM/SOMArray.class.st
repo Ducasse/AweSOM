@@ -64,7 +64,8 @@ SOMArray >> elements [
 ]
 
 { #category : #accessing }
-SOMArray >> indexOf: element [ 
+SOMArray >> indexOf: element [
+
 	^ self indexableFields indexOf: element
 ]
 

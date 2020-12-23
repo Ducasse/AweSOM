@@ -50,7 +50,7 @@ SOMMethodGenerator >> addArgumentIfAbsent: argName [
 
 { #category : #'update information' }
 SOMMethodGenerator >> addLiteralIfAbsent: literal [
-	"Return the index of a literal, add it if not defined."
+	"Add if not present and return the index of a literal."
 	
 	| idx |
 	idx := self literals identityIndexOf: literal.
@@ -168,11 +168,12 @@ SOMMethodGenerator >> bcPushBlock: method [
 	
 	| idx |
 	idx := self addLiteralIfAbsent: method.
-	^ self bytecode add: (SOMBCPushBlock in: self index: idx).
+	^ self bytecode add: (SOMBCPushBlock in: self index: idx)
 ]
 
 { #category : #bytecode }
 SOMMethodGenerator >> bcPushConstant: const [
+
 	| literalIndex |
 	literalIndex := self addLiteralIfAbsent: const.
 	self bytecode add: (SOMBCPushConstant in: self index: literalIndex).
@@ -312,6 +313,7 @@ SOMMethodGenerator >> emitSend: selector isSuper: isSuper [
 
 { #category : #lookup }
 SOMMethodGenerator >> findVariable: varName context: ctx ifFound: aBlock [
+
 	| idx isArgument |
 	isArgument := false.
 

@@ -5,7 +5,7 @@ Class {
 }
 
 { #category : #create }
-CompileSOMMethodTest >> createMgencFromSource: source [
+CompileSOMMethodTest >> createMethodGeneratorFromSource: source [
 	
 	| parser |
 	parser := SOMMethodParser inUniverse: universe onSource: source from: 'test'.
@@ -25,7 +25,7 @@ CompileSOMMethodTest >> test01BuildSimpleMethod [
 { #category : #tests }
 CompileSOMMethodTest >> test02BuildByteCode [
 	| mgenc method |
-	mgenc := self createMgencFromSource: 'x: a = (|aLocal| ^a)'.
+	mgenc := self createMethodGeneratorFromSource: 'x: a = (|aLocal| ^a)'.
 	method := mgenc assembleIn: universe.
 	{SOMBCPushArgument. SOMBCReturnLocal} withIndexDo: [:each :i|
 		self assert: ((method bytecodeAt: i) isKindOf: each)].
@@ -37,7 +37,7 @@ CompileSOMMethodTest >> test02BuildByteCode [
 { #category : #tests }
 CompileSOMMethodTest >> test02BuildMethodWithConstants [
 	| mgenc method |
-	mgenc := self createMgencFromSource: 'x: a = (a foo: 42)'.
+	mgenc := self createMethodGeneratorFromSource: 'x: a = (a foo: 42)'.
 	method := mgenc assembleIn: universe.
 	"waiting for arvid's patch"
 	"self assert: (method constantForBytecodeIndex: 1) symbol equals: #foo."

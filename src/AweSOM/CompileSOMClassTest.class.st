@@ -19,7 +19,7 @@ CompileSOMClassTest >> compileSource: source [
 ]
 
 { #category : #compiling }
-CompileSOMClassTest >> createCgencFromSource: source [
+CompileSOMClassTest >> createClassGeneratorFromSource: source [
 	
 	| parser |
 	parser := SOMClassParser inUniverse: universe onSource: source from: 'test'.
@@ -57,7 +57,7 @@ CompileSOMClassTest >> test02CompileClass [
 { #category : #tests }
 CompileSOMClassTest >> test03CompileClassWithMethod [
 	| cgenc clazz |
-	cgenc := self createCgencFromSource: 'Bla = Array (method1 = (^ 42) method2 = primitive ---- classMethod = ())'.
+	cgenc := self createClassGeneratorFromSource: 'Bla = Array (method1 = (^ 42) method2 = primitive ---- classMethod = ())'.
 	clazz := cgenc assembleIn: universe.
 	self 
 		assert: clazz somInstanceInvokables size
@@ -72,7 +72,7 @@ CompileSOMClassTest >> test03CompileClassWithMethod [
 { #category : #tests }
 CompileSOMClassTest >> test04CompileClassWithSuperclass [
 	| cgenc clazz |
-	cgenc := self createCgencFromSource: 'Bla = Array (method1 = (^ 42) method2 = primitive)'.
+	cgenc := self createClassGeneratorFromSource: 'Bla = Array (method1 = (^ 42) method2 = primitive)'.
 	clazz := cgenc assembleIn: universe.
 	self 
 		assert: clazz somSuperClass
@@ -88,7 +88,7 @@ CompileSOMClassTest >> test05UnsharedFieldInMethodSubClass [
 	universe setupClasspath: 'Smalltalk:TestSuite:.'.
 	
 	self loadClazzes: { #Object. #Method }.
-	cgenc := self createCgencFromSource: 
+	cgenc := self createClassGeneratorFromSource: 
 	  'MethodSubClass = Method(	| thisMightCollideWithBytecodes |
 	   setField = (thisMightCollideWithBytecodes := 42.))'.
 	somClass := cgenc assembleIn: universe.
